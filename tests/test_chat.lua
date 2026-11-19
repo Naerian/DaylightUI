@@ -2850,6 +2850,28 @@ T.test("chat daylight: spam in public channels hidden (repeats, adverts) under o
     T.eq(#stub.errors, 0, tostring(stub.errors[1]))
 end)
 
+T.test("chat daylight: the icons in a friend alert go down, other lines keep theirs", function()
+    daylight()
+    local Extras = stub.chatModule.Extras
+    local d = Extras.ICON_DROP
+    local alert = "|TInterface\\FriendsFrame\\Icon:14:14:0:0|t [Ann] (|T123456:14|t Bob) is online."
+    local out = Extras.Decorate(alert, "bnalert")
+    T.eq(out, "|TInterface\\FriendsFrame\\Icon:14:14:0:" .. -d .. "|t [Ann] (|T123456:14:0:0:" .. -d .. "|t Bob) is online.", "both icons go down, the short one filled in")
+    T.eq((Extras.Decorate(alert, "say")), alert, "a line that isn't a friend alert is left as it is")
+end)
+
+
+T.test("chat daylight: the icons in a friend alert go down, other lines keep theirs", function()
+    daylight()
+    local Extras = stub.chatModule.Extras
+    local d = Extras.ICON_DROP
+    local alert = "|TInterface\\FriendsFrame\\Icon:14:14:0:0|t [Ann] (|T123456:14|t Bob) is online."
+    local out = Extras.Decorate(alert, "bnalert")
+    T.eq(out, "|TInterface\\FriendsFrame\\Icon:14:14:0:" .. -d .. "|t [Ann] (|T123456:14:0:0:" .. -d .. "|t Bob) is online.", "both icons go down, the short one filled in")
+    T.eq((Extras.Decorate(alert, "say")), alert, "a line that isn't a friend alert is left as it is")
+end)
+
+
 T.test("chat daylight: your own words and phrases hide public lines, by what was typed", function()
     local _, box = daylight()
     local Extras = stub.chatModule.Extras
