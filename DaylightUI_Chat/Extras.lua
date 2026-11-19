@@ -318,10 +318,24 @@ local function group(text, kind)
     end))
 end
 
+-- The game sets the icons in a friend alert (class, game) for its own font; with
+-- Daylight's they ride too high. Each one goes down by ICON_DROP pixels.
+Extras.ICON_DROP = 2
+
+local function dropIcons(text)
+    return (string.gsub(text, "|T([^|]-)|t", function(inner)
+        local path, h, w, x, y = string.match(inner, "^([^:]*):?([^:]*):?([^:]*):?([^:]*):?([^:]*)$")
+        if not path or h == "" then return nil end
+        return string.format("|T%s:%s:%s:%s:%s|t", path, h, w ~= "" and w or "0", x ~= "" and x or "0",
+            (tonumber(y) or 0) - Extras.ICON_DROP)
+    end))
+end
+
 -- A copy of a plain line with alert words lit and role icons added. Returns
 -- true if it's an alert.
 function Extras.Decorate(text, kind, sender, guid)
     if not cfg then return text, false end
+    if kind == "bnalert" then text = dropIcons(text) end
     local hit
     text, hit = alert(text, kind, sender, guid)
     if cfg.groupLines ~= false then text = group(text, kind) end
