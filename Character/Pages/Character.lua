@@ -28,6 +28,8 @@ CharacterPage.STAT_PAD = 3      -- above and under a name that wraps
 CharacterPage.STAT_GAP = 10     -- between a stat's name and its value
 CharacterPage.STAT_SECRET_W = 56  -- the room kept for a value that can't be measured
 CharacterPage.STAT_INSET = 5    -- a stat's words in from its stripe's edges
+CharacterPage.STAT_ICON = 16    -- a resistance's school picture, left of its name
+CharacterPage.STAT_ICON_GAP = 4
 CharacterPage.GROUP_HEAD = 26
 CharacterPage.GROUP_GAP = 6
 CharacterPage.LINE_ALPHA = 0.85 -- the line under a group's header
@@ -208,6 +210,9 @@ local function statRow(content, pool, i)
     r.stripe:SetAllPoints()
     r.stripe:Hide()
     local inset = CharacterPage.STAT_INSET
+    r.icon = r:CreateTexture(nil, "ARTWORK")
+    r.icon:SetSize(CharacterPage.STAT_ICON, CharacterPage.STAT_ICON)
+    r.icon:Hide()
     r.label = Style.Text(r, CharacterPage.STAT_SIZE, "LEFT")
     r.label:SetPoint("TOPLEFT", r, "TOPLEFT", inset, 0)
     r.label:SetWordWrap(true)   -- a long name wraps under itself rather than running under its value
@@ -270,14 +275,17 @@ function CharacterPage.FitStat(r, w)
     -- A value that cannot be measured (secret, in a fight) keeps the width it last had, or a usual one.
     local vw = measure(r.value, "GetStringWidth")
     if vw then r.valueW = vw else vw = r.valueW or CharacterPage.STAT_SECRET_W end
-    local room = math.max(20, w - 2 * inset - vw - CharacterPage.STAT_GAP)
+    local lead = r.row and r.row.icon and (CharacterPage.STAT_ICON + CharacterPage.STAT_ICON_GAP) or 0   -- room for the picture
+    local room = math.max(20, w - 2 * inset - vw - CharacterPage.STAT_GAP - lead)
     r.label:SetWidth(room)
     local lh, vh = tall(r.label, size), tall(r.value, size)
     local h = math.max(CharacterPage.STAT_ROW, math.ceil(lh) + 2 * CharacterPage.STAT_PAD)
     local wrapped = lh > vh * 1.5   -- the name takes more lines than the value does
     r.label:ClearAllPoints()
     r.value:ClearAllPoints()
-    r.label:SetPoint("TOPLEFT", r, "TOPLEFT", inset, -(wrapped and CharacterPage.STAT_PAD or math.floor((h - lh) / 2)))
+    r.label:SetPoint("TOPLEFT", r, "TOPLEFT", inset + lead, -(wrapped and CharacterPage.STAT_PAD or math.floor((h - lh) / 2)))
+    r.icon:ClearAllPoints()
+    r.icon:SetPoint("LEFT", r, "LEFT", inset, 0)
     r.value:SetPoint("TOPRIGHT", r, "TOPRIGHT", -inset, -(wrapped and CharacterPage.STAT_PAD or math.floor((h - vh) / 2)))
     r:SetHeight(h)
     return h
@@ -342,6 +350,14 @@ function CharacterPage.RefreshStats(page)
                 r:SetWidth(w)
                 ns.Colors.Stripe(r.stripe, i)
                 r.label:SetText(row.label)
+                local ic = row.icon
+                if ic then
+                    r.icon:SetTexture(ns.Stats.RESIST_ICONS)
+                    r.icon:SetTexCoord(ic[1], ic[2], ic[3], ic[4])
+                    r.icon:Show()
+                else
+                    r.icon:Hide()
+                end
                 ns.Stats.Paint(r.value, row)
                 local h = CharacterPage.FitStat(r, w)
                 local c = (row.stale and CharacterPage.STALE) or (row.buff == "up" and CharacterPage.UP)
