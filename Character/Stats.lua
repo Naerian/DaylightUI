@@ -207,17 +207,9 @@ A[#A + 1] = { id = "health", label = L["Health"], fmt = "%.0f", game = "PaperDol
 A[#A + 1] = maxPower("player")
 A[#A + 1] = moveSpeed("player")
 
--- Each school's picture on the game's resistance strip (the sheet's own icons), as left, right, top, bottom.
-Stats.RESIST_ICONS = "Interface\\PaperDollInfoFrame\\UI-Character-ResistanceIcons"
-local RESIST = {
-    { 2, "fire", L["Fire"], { 0, 1, 0, 0.11328125 } },
-    { 3, "nature", L["Nature"], { 0, 1, 0.11328125, 0.2265625 } },
-    { 4, "frost", L["Frost"], { 0, 1, 0.33984375, 0.453125 } },
-    { 5, "shadow", L["Shadow"], { 0, 1, 0.453125, 0.56640625 } },
-    { 6, "arcane", L["Arcane"], { 0, 1, 0.2265625, 0.33984375 } },
-}
+local RESIST = { { 2, "fire", L["Fire"] }, { 3, "nature", L["Nature"] }, { 4, "frost", L["Frost"] }, { 5, "shadow", L["Shadow"] }, { 6, "arcane", L["Arcane"] } }
 for i, r in ipairs(RESIST) do
-    Stats.ROWS.resistances[i] = { id = "res_" .. r[2], label = r[3], icon = r[4], fmt = "%.0f", show = 1, game = "PaperDollFrame_SetResistance", gameArg = r[1],
+    Stats.ROWS.resistances[i] = { id = "res_" .. r[2], label = r[3], fmt = "%.0f", show = 1, game = "PaperDollFrame_SetResistance", gameArg = r[1],
         read = function()   -- base, real, effective, bonus
             local base, _, eff = call("UnitResistance", "player", r[1]); return eff, base
         end,
@@ -274,7 +266,7 @@ Stats.ROWS.pet = {
 }
 Stats.ROWS.petResist = {}
 for i, r in ipairs(RESIST) do
-    Stats.ROWS.petResist[i] = { id = "pet_res_" .. r[2], label = r[3], icon = r[4], fmt = "%.0f", show = 1, unit = "pet",
+    Stats.ROWS.petResist[i] = { id = "pet_res_" .. r[2], label = r[3], fmt = "%.0f", show = 1, unit = "pet",
         game = "PaperDollFrame_SetResistance", gameArg = r[1],
         read = function() local base, _, eff = call("UnitResistance", "pet", r[1]); return eff, base end,
         buff = overBase }
@@ -289,7 +281,7 @@ function Stats.Row(def)
     for i = 1, n do if isSecret(raw[i]) then secret = true end end
     local label = def.label
     if type(label) == "function" then label = label() end
-    local row = { id = def.id, label = label, icon = def.icon, fmt = def.fmt, secret = secret, game = def.game, gameArg = def.gameArg, unit = def.unit }
+    local row = { id = def.id, label = label, fmt = def.fmt, secret = secret, game = def.game, gameArg = def.gameArg, unit = def.unit }
     if def.compute then
         if secret then
             row.stale = true

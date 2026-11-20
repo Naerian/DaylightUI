@@ -332,14 +332,6 @@ T.test("character stats: resistances stay plain in combat", function()
     T.eq(S.Text(fire), "10")
 end)
 
-T.test("character stats: a resistance row carries its school's picture, and no other row does", function()
-    local S = stats()
-    local fire = rowOf(S.Read("resistances"), "res_fire")
-    T.eq(fire.icon[3], 0, "fire is the strip's first picture")
-    T.eq(rowOf(S.Read("resistances"), "res_arcane").icon[3], 0.2265625)
-    T.isnil(rowOf(S.Read("attributes"), "health").icon)
-end)
-
 T.test("character stats: resistances and armor read the client's own return order", function()
     local S = stats()
     local fire = rowOf(S.Read("resistances"), "res_fire")
@@ -1139,18 +1131,6 @@ T.test("character page: opening paints the gear, the footer and the stats", func
     T.eq(page.stats.groups.defense.rows[1]:IsShown(), false, "Defense folded (by class and spec)")
     T.eq(page.stats.groups.defense.head.state:GetText(), "+")
     T.truthy(#CW.Calls("setUpScene") >= 1, "the model set up on open")
-end)
-
-T.test("character page: a resistance row shows its picture and moves its name over", function()
-    local P, ns = charPage()
-    local page = openChar(ns)
-    local res = page.stats.groups.resistances.rows[1]
-    local attr = page.stats.groups.attributes.rows[1]
-    T.truthy(res.icon:IsShown(), "the picture")
-    T.eq(attr.icon:IsShown(), false, "no picture on an attribute")
-    local w = P.STATS_W - 2 * P.STATS_PAD
-    T.truthy(P.FitStat(res, w) >= P.STAT_ROW)
-    T.eq(res.label:GetWidth() + P.STAT_ICON + P.STAT_ICON_GAP <= w, true, "the name leaves room for it")
 end)
 
 T.test("character page: a group you click is folded and remembered", function()
