@@ -14,7 +14,7 @@ local Style = DUI.Style
 local Slots = {}
 ns.Slots = Slots
 
-Slots.ICON = 36
+Slots.ICON = 44
 Slots.AMMO = 22           -- ammo slot size, small as in the game's window
 Slots.AMMO_GAP = 10       -- ranged to ammo icon, clears both outlines with room to spare
 Slots.EDGE = 3            -- quality outline width

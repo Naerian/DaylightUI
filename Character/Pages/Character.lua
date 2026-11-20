@@ -14,7 +14,7 @@ ns.CharacterPage = CharacterPage
 
 CharacterPage.EDGE = 16
 CharacterPage.TOP = 12          -- under the header
-CharacterPage.ROW = 54          -- slot to slot
+CharacterPage.ROW = 58          -- slot to slot
 CharacterPage.COL = 200         -- a slot column with names (snug to the model: the names sit close in)
 CharacterPage.GAP = 8
 CharacterPage.WEAPON_W = 190    -- a weapon slot with names (the row sits centered)
